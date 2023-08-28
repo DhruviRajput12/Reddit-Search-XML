@@ -2,7 +2,7 @@
 
 **Course**: ITC5202 - XML/JSON Data Processing  
 **Group**: Group 14  
-**Members**: Kartik Nain (N01516607), Dhruvi Rajput (N01496176)  
+**Members**: Kartik Nain, Dhruvi Rajput  
 **Submission Date**: 8/8/2022  
 
 ## Table of Contents
