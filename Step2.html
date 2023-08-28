@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<!--/********************************************************************************* 
+*  ITC5202 – Project 
+*  I declare that this assignment is my own work in accordance with Humber Academic Policy.   
+*  No part of this assignment has been copied manually or electronically from any other source 
+*  (including web sites) or distributed to other students. 
+*  
+*  Group member Name: Kartik Nain, Dhruvi Rajput Student IDs: N01516607, N01496176 Date: 08/08/2022
+* 
+* 
+********************************************************************************/-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step2</title>
+    <style>
+        body {
+            background-color: rgb(179, 249, 253);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        table {
+            margin-left: auto;
+            margin-right: auto;
+            padding: 2px;
+            background-color: rgb(143, 179, 188);
+        }
+
+        td,
+        th {
+            padding: 5px;
+            background-color: rgb(207, 207, 205);
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#searchButton').click(function () {
+                if (!$("#myFieldset #search").val()) {
+                    alert('Please fill all the fields');
+                    return false;
+                }
+                else {
+                    var fieldsetData = $("#myFieldset #search").val();
+                }
+                fetch(`https://api.pushshift.io/reddit/search/comment/?q=${fieldsetData}&limit=100`)
+                    .then(res => {
+                        return res.json();
+                    })
+                    .then(function (data) {
+                        let output = "<table border='1'> ";
+                        output += "<tr>";
+                        output += "<td>" + "Title" + "</td>";
+                        output += "<td>" + "Author" + "</td>";
+                        output += "<td>" + "Subreddit" + "</td>";
+                        //output += "<td>" + "URL" + "</td>";
+                        output += "<td>" + "Flair" + "</td>";
+                        output += "<td>" + "Score" + "</td>";
+                        output += "</tr>";
+                        data.data.sort((a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0)) //Step 2
+                        for (let i = 0; i < data.data.length; i++) {
+                            output += "<tr>";
+                            output += "<td>" + data.data[i].body + "</td>";
+                            output += "<td>" + data.data[i].author + "</td>";
+                            output += "<td>" + data.data[i].subreddit + "</td>";
+                           // output += "<td>" + data.data[i].url + "</td>";Url is undefined in api so we have commented it out
+                            output += "<td>" + data.data[i].author_flair_text + "</td>";
+                            output += "<td>" + data.data[i].score + "</td>";
+                            output += "</tr>"
+                        }
+                        output += "</table>"
+                        document.getElementById("searchResult").innerHTML = output;
+                    })
+                    .catch(function(){
+                        console.log("Error while fetching api");
+                    });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <h3>Search Reddit: </h3>
+    <fieldset id="myFieldset">
+        <label for="search">Type the query here:</label>
+        <input type="text" id="search" name="search"><br><br>
+        <input type="submit" value="Submit" id="searchButton">
+    </fieldset>
+    <p id="searchResult"></p>
+</body>
+
+</html>

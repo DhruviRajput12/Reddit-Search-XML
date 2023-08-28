@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!--/********************************************************************************* 
+*  ITC5202 – Project 
+*  I declare that this assignment is my own work in accordance with Humber Academic Policy.   
+*  No part of this assignment has been copied manually or electronically from any other source 
+*  (including web sites) or distributed to other students. 
+*  
+*  Group member Name: Kartik Nain, Dhruvi Rajput Student IDs: N01516607, N01496176 Date: 08/08/2022
+* 
+* 
+********************************************************************************/-->
+<html>
+    <head>
+        <style>
+            table {
+            border: 2px;
+            }
+
+            body {
+            display: flex;
+            flex-direction: column;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 2rem;
+            }
+
+            table {
+            font-size: 1rem;
+            font-weight: bolder;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            border: 3px solid #9899eb;
+            }
+
+            th {
+            color: white;
+            padding: 1rem;
+            font-weight: bolder;
+            background-color: #332c5a;  
+            }
+
+            th, td {
+            width: 20rem;
+            column-width: 500px;
+
+            }
+
+            th,
+            td {
+            width: 5rem;
+            column-width: 200px;
+            overflow-wrap: break-word;
+            font-size: 0.75rem;
+            }
+
+            table {
+            margin-bottom: 3rem;
+            }
+        </style>
+    </head>
+<body>
+    <p id="display"></p>
+    <script>
+    //Create the XHR object
+    var xhttp = new XMLHttpRequest();
+    //Open the file
+    xhttp.open("GET", "dataset_r.xml", false);
+    //Send the request
+    xhttp.send();
+    // Read data
+    xmlDoc = xhttp.responseXML;
+    console.log(xmlDoc);
+
+    let output = "<table border='2'>";
+        output+="<tr>";
+        output+="<th colspan='2'>"+ "Author" + "</th>";   
+        output+="<th>"+ "Category" + "</th>";
+        output+="<th>"+ "Content" + "</th>";
+        output+="<th>"+ "Id" + "</th>";
+        output+="<th>"+ "Link" + "</th>";
+        output+="<th>"+ "Updated" + "</th>";
+        output+="<th>"+ "Published" + "</th>";
+        output+="<th>"+ "Title" + "</th>";
+        output+="</tr><tr>";
+        output+="<th>"+ "Name" + "</th>"
+        output+="<th>"+ "Link" + "</th>"
+        output+="<th></th>"
+        output+="<th></th><th></th><th></th><th></th><th></th><th></th>"
+        output+="</tr>"
+
+    var lengthofTagEntery = xmlDoc.getElementsByTagName("entry").length
+    for(let i = 0; i<lengthofTagEntery ;i++)
+    {
+        let entry = xmlDoc.getElementsByTagName("entry")[i];
+        output+=`<tr>`
+        output+=`<td>${entry.children[0].children[0].innerHTML}</td>`;
+        output+=`<td><a href='${entry.children[0].children[1].innerHTML}'>${entry.children[0].children[1].innerHTML}</a></td>`;
+        output+=`<td>${entry.children[1].getAttribute("term")}</td>`;
+        output+=`<td><html>${entry.children[2].innerHTML}</html></td>`;
+        output+=`<td>${entry.children[3].innerHTML}</td>`;
+        output+=`<td><a href='${entry.children[4].getAttribute("href")}'>${entry.children[4].getAttribute("href")}</a></td>`;
+        output+=`<td>${entry.children[5].innerHTML}</td>`;
+        output+=`<td>${entry.children[6].innerHTML}</td>`;
+        output+=`<td>${entry.children[7].innerHTML}</td>`;
+        output+=`</tr>`
+
+    }
+
+    document.getElementById("display").innerHTML=output;
+    </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!--/********************************************************************************* 
+*  ITC5202 – Project 
+*  I declare that this assignment is my own work in accordance with Humber Academic Policy.   
+*  No part of this assignment has been copied manually or electronically from any other source 
+*  (including web sites) or distributed to other students. 
+*  
+*  Group member Name: Kartik Nain, Dhruvi Rajput Student IDs: N01516607, N01496176 Date: 08/08/2022
+* 
+* 
+********************************************************************************/-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css"
+        integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Step 4</title>
+    <style>
+        html {
+            margin: 20px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: rgb(255, 249, 232);
+        }
+
+        td,
+        th {
+            padding: 5px;
+            background-color: rgb(207, 207, 205);
+        }
+
+        fieldset {
+            background-color: rgb(230, 230, 230);
+            padding: 20px;
+            ;
+        }
+
+        #searchButton {
+            width: 508px;
+            background-color: black;
+            color: white;
+        }
+
+        #search,
+        #limit {
+            width: 500px;
+        }
+
+        .card {
+            text-align: center;
+            background-color: rgb(237, 237, 237);
+        }
+
+        .mainouter {
+            margin: 10% 10% 10% 10%;
+        }
+
+        .box {
+            background-color: rgb(237, 237, 237);
+        }
+
+        .title-span {
+            background-color: darkgrey;
+            color: white;
+            padding: 2px;
+        }
+
+        .score-span {
+            background-color: black;
+            color: white;
+            padding: 2px;
+
+        }
+
+        .card-img-top {
+            padding: 20px;
+        }
+
+        .title-div {
+            padding-top: 20px;
+        }
+
+        .score-div {
+            padding-bottom: 20px;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            $('#searchButton').click(function () {
+                if ((!$("#search").val()) || (!$("input[name='whichSort']:checked").val()) || (!$("#limit").val())) {
+                    alert('Please enter all the details');
+                    return false;
+                }
+                else {
+                    var subreddit = $("#search").val();
+                    var sortValue = $('input[name="whichSort"]:checked').val();
+                    var limit = $("#limit").val();
+                }
+                output = "<div class='mainouter'>";
+                output += "<div class='row'>";
+                fetch(`https://www.reddit.com/search.json?q=${subreddit}&limit=${limit}&sort=${sortValue}`) //For Step 3, &limit=100 has been appended
+                    .then(res => {
+                        return res.json();
+                    })
+                    .then(function (data) {
+                        $.each(data.data.children, function (i, item) {
+                            let image = item.data.preview ?
+                                item.data.preview.images[0].source.url :
+                                'https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg';
+                            if (i % 3 == 0) {
+                                output += "</div><div class='row'>";
+                            }
+                            var moreData = `https://www.reddit.com${item.data.permalink}`;
+                            output += `
+                    <div class="col-sm-4">
+                        <div class="card text-right">
+                            <img class="card-img-top" src="${image}" height=200px width=300px>
+                            <div class="card-body">
+                                 <h5 class="card-title">${item.data.title}</h5>
+                                <a href="${moreData}" target="_blank " class="btn btn-primary">Read More</a><br>
+                                <div class="title-div"><span class="title-span">Subreddit: ${item.data.subreddit}</span></div><br>
+                                <div class="score-div"><span class="score-span">Score: ${item.data.score}</span></div>
+                            </div>
+                        </div>
+                    </div> 
+                    `
+                        });
+                        output += "</div>";
+                        $("#searchResult").html(output);
+                    })
+                    .catch(function () {
+                        console.log("Error while fetching api");
+                    });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <h2>Reddit Search: </h2>
+    <fieldset id="myFieldset">
+        <label for="search"><b>Search Reddit:</b></label><br>
+        <input type="text" id="search" name="search"><br><br>
+
+        <label>Sort By:</label>
+        <input type="radio" id="relevance" name="whichSort" value="relevance">
+        <label for="relevance">Relevance</label>
+        <input type="radio" id="latest" name="whichSort" value="latest">
+        <label for="latest">Latest</label><br><br>
+
+        <label for="limit"><b>Limit:</b></label><br>
+        <input type="text" id="limit" name="limit"><br><br>
+
+        <input type="submit" value="Search" id="searchButton">
+    </fieldset>
+    <p id="searchResult"></p>
+</body>
+
+</html>
